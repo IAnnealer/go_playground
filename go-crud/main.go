@@ -22,5 +22,7 @@ func main() {
 
 	router.GET("/posts/:id", controllers.PostsShow)
 
+	router.PUT("/posts/:id", controllers.PostsUpdate)
+
 	router.Run()
 }
