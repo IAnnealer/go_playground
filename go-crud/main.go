@@ -24,5 +24,7 @@ func main() {
 
 	router.PUT("/posts/:id", controllers.PostsUpdate)
 
+	router.DELETE("/posts/:id", controllers.PostsDelete)
+
 	router.Run()
 }
