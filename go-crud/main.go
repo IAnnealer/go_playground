@@ -18,5 +18,9 @@ func main() {
 	// router.GET("/", controllers.PostsCreate)
 	router.POST("/posts", controllers.PostsCreate)
 
+	router.GET("/posts", controllers.PostsIndex)
+
+	router.GET("/posts/:id", controllers.PostsShow)
+
 	router.Run()
 }
