@@ -6,13 +6,13 @@ import (
 	"os"
 )
 
-var db *gorm.DB
+var DB *gorm.DB
 
 func ConnectDB() {
 	var err error
 	dsn := os.Getenv("DB")
-	DB, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
-	db = DB
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	DB = db
 
 	if err != nil {
 		panic("Failed to connect DB")
