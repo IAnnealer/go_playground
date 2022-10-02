@@ -12,5 +12,5 @@ func main() {
 	routes.RegisterRoutes(r)
 
 	http.Handle("/", r)
-	log.Fatal(http.ListenAndServe(":/3000", r))
+	log.Fatal(http.ListenAndServe(":3000", r))
 }
