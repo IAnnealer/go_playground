@@ -2,10 +2,10 @@ package models
 
 import (
 	"github.com/iannealer/go_playground/go-bookstore/pkg/config"
-	"github.com/jinzhu/gorm"
+	"gorm.io/gorm"
 )
 
-var db *gorm.DB
+var DB *gorm.DB
 
 type Book struct {
 	gorm.Model
@@ -16,6 +16,30 @@ type Book struct {
 
 func init() {
 	config.ConnectDB()
-	db = config.GetDB()
-	db.AutoMigrate(&Book{})
+	DB = config.GetDB()
+	DB.AutoMigrate(&Book{})
+}
+
+func (b *Book) CreateBook() *Book {
+	//DB.NewRecord(b)
+	DB.Create(&b)
+	return b
+}
+
+func GetAllBooks() []Book {
+	var Books []Book
+	DB.Find(&Books)
+	return Books
+}
+
+func GetBookById(Id int64) (*Book, *gorm.DB) {
+	var book Book
+	db := DB.Where("ID = ?", Id).Find(book)
+	return &book, db
+}
+
+func DeleteBook(ID int64) Book {
+	var book Book
+	DB.Where("ID = ?", ID).Delete(&book)
+	return book
 }
