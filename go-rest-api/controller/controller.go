@@ -2,32 +2,37 @@ package controller
 
 import (
 	"encoding/json"
-	"github.com/iannealer/go_playground/go-rest-api/model"
+	"github.com/iannealer/go_playground/go-rest-api/entity"
+	"github.com/iannealer/go_playground/go-rest-api/repository"
+	"math/rand"
 	"net/http"
 )
 
-var Posts []model.Post
+//var Posts []entity.Post
 
-func init() {
-	Posts = []model.Post{model.Post{Id: 1, Title: "Title 1", Text: "Text 1"}}
-}
+var (
+	repo repository.PostRepository = repository.NewPostRepository()
+)
 
 func GetPosts(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-
-	result, err := json.Marshal(Posts)
+	posts, err := repo.FindAll()
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(`{"error": "Error marshalling the posts array"}`))
+		w.Write([]byte(`{"error": "Error getting the posts"}`))
 		return
 	}
+
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(posts)
 
 	w.WriteHeader(http.StatusOK)
 	w.Write(result)
 }
 
 func CreatePost(w http.ResponseWriter, r *http.Request) {
-	var post model.Post
+	w.Header().Set("Content-Type", "application/json")
+	var post entity.Post
 
 	err := json.NewDecoder(r.Body).Decode(&post)
 	if err != nil {
@@ -36,10 +41,9 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	post.Id = len(Posts) + 1
-	posts = append(Posts, post)
+	post.ID = rand.Int63()
+	repo.Save(&post)
 	w.WriteHeader(http.StatusOK)
 
-	result, err := json.Marshal(post)
-	w.Write(result)
+	json.NewEncoder(w).Encode(post)
 }
